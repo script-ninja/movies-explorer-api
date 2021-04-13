@@ -1,0 +1,26 @@
+{
+  "name": "movies-explorer-api",
+  "version": "1.0.0",
+  "description": "Сервис поиска фильмов",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/script-ninja/movies-explorer-api.git"
+  },
+  "keywords": [
+    "кино",
+    "фильм",
+    "боевик",
+    "драма",
+    "комедия"
+  ],
+  "author": "script-ninja",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/script-ninja/movies-explorer-api/issues"
+  }
+}
