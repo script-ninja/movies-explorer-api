@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const { VALIDATOR_OPTIONS } = require('../utils/config');
 
 const schema = new mongoose.Schema({
   country: {
@@ -27,7 +28,7 @@ const schema = new mongoose.Schema({
     required: [true, 'Нет постера к фильму'],
     validate: {
       validator(url) {
-        return validator.isURL(url, { protocols: ['http', 'https'] });
+        return validator.isURL(url, VALIDATOR_OPTIONS);
       },
       message: 'Некорректная ссылка на постер',
     },
@@ -37,7 +38,7 @@ const schema = new mongoose.Schema({
     required: [true, 'Не указана ссылка на трейлер'],
     validate: {
       validator(url) {
-        return validator.isURL(url, { protocols: ['http', 'https'] });
+        return validator.isURL(url, VALIDATOR_OPTIONS);
       },
       message: 'Некорректная ссылка на трейлер',
     },
@@ -47,7 +48,7 @@ const schema = new mongoose.Schema({
     required: [true, 'Не указана ссылка на миниатюру постера'],
     validate: {
       validator(url) {
-        return validator.isURL(url, { protocols: ['http', 'https'] });
+        return validator.isURL(url, VALIDATOR_OPTIONS);
       },
       message: 'Некорректная ссылка на миниатюру постера',
     },

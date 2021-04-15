@@ -16,6 +16,10 @@ module.exports = {
 
   SALT_ROUNDS: 10,
 
+  VALIDATOR_OPTIONS: {
+    protocols: ['http', 'https'],
+  },
+
   MONGO_URI:
     (process.env.NODE_ENV === 'production')
       ? process.env.MONGO_URI

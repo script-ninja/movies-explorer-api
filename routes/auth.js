@@ -4,6 +4,7 @@ const { login, createUser } = require('../controllers/users');
 
 router.route('/signin')
   .post(login);
+
 router.route('/signup')
   .post(createUser);
 
