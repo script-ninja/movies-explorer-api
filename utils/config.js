@@ -2,8 +2,18 @@ module.exports = {
   PORT:
     process.env.PORT || 3001,
 
+  NODE_ENV:
+    process.env.NODE_ENV || 'dev',
+
+  JWT_KEY:
+    (process.env.NODE_ENV === 'production')
+      ? process.env.JWT_KEY
+      : 'jwt-key',
+
   MONGO_URI:
-    process.env.MONGO_URI || 'mongodb://localhost:27017/moviesdb',
+    (process.env.NODE_ENV === 'production')
+      ? process.env.MONGO_URI
+      : 'mongodb://localhost:27017/moviesdb',
 
   MONGO_OPTIONS: {
     useNewUrlParser: true,
