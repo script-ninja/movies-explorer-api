@@ -10,6 +10,12 @@ module.exports = {
       ? process.env.JWT_KEY
       : 'jwt-key',
 
+  JWT_OPTIONS: {
+    expiresIn: '7d',
+  },
+
+  SALT_ROUNDS: 10,
+
   MONGO_URI:
     (process.env.NODE_ENV === 'production')
       ? process.env.MONGO_URI

@@ -1,25 +1,20 @@
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const UserModel = require('../models/user');
 const BadRequestError = require('../errors/BadRequestError');
 const ConflictError = require('../errors/ConflictError');
 const NotFoundError = require('../errors/NotFoundError');
 const InternalServerError = require('../errors/InternalServerError');
+const UnauthorizedError = require('../errors/UnauthorizedError');
+const { JWT_KEY, JWT_OPTIONS, SALT_ROUNDS } = require('../utils/config');
 
-function getUser(req, res, next) {
-  // тестовый id
-  req.user = { _id: '60782573495c7a1a18b15c7b' };
-  UserModel.findById(req.user._id)
-    .orFail(new NotFoundError('Пользователь не найден'))
-    .then((user) => res.status(200).send(user))
-    .catch((err) => {
-      if (err.status) throw err;
-      if (err.name === 'CastError') throw new BadRequestError('Некорректный ID пользователя');
-      throw new InternalServerError('Не удалось получить пользователя');
-    })
-    .catch(next);
-}
-
+// === регистрация и авторизация === //
 function createUser(req, res, next) {
-  UserModel.create(req.body)
+  bcrypt.hash(req.body.password, SALT_ROUNDS)
+    .then((hash) => {
+      req.body.password = hash;
+      return UserModel.create(req.body);
+    })
     .then((user) => res.status(201).send({
       _id: user._id,
       email: user.email,
@@ -35,13 +30,44 @@ function createUser(req, res, next) {
           }
           break;
         default:
-          throw new InternalServerError('Не удалось добавить пользователя');
+          throw new InternalServerError('Не удалось зарегистрировать');
       }
     })
     .catch(next);
 }
 
+function login(req, res, next) {
+  const { email, password } = req.body;
+  UserModel.findOne({ email }).select('+password')
+    .then((user) => {
+      if (!user) throw new UnauthorizedError('Неправильные почта или пароль');
+
+      return bcrypt.compare(password, user.password)
+        .then((matched) => {
+          if (!matched) throw new UnauthorizedError('Неправильные почта или пароль');
+          res.status(200).send({
+            token: jwt.sign({ _id: user._id }, JWT_KEY, JWT_OPTIONS),
+          });
+        });
+    })
+    .catch(next);
+}
+// ================================= //
+
+function getUser(req, res, next) {
+  UserModel.findById(req.user._id)
+    .orFail(new NotFoundError('Пользователь не найден'))
+    .then((user) => res.status(200).send(user))
+    .catch((err) => {
+      if (err.status) throw err;
+      if (err.name === 'CastError') throw new BadRequestError('Некорректный ID пользователя');
+      throw new InternalServerError('Не удалось получить пользователя');
+    })
+    .catch(next);
+}
+
 module.exports = {
-  getUser,
   createUser,
+  login,
+  getUser,
 };

@@ -17,6 +17,7 @@ function getMovie(req, res, next) {
 }
 
 function createMovie(req, res, next) {
+  req.body.owner = req.user._id;
   MovieModel.create(req.body)
     .then((movie) => res.status(201).send(movie))
     .catch((err) => {

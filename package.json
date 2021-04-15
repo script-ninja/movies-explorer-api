@@ -24,6 +24,7 @@
     "url": "https://github.com/script-ninja/movies-explorer-api/issues"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "celebrate": "^14.0.0",
     "cors": "^2.8.5",

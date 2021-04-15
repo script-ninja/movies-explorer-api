@@ -1,9 +1,10 @@
-<h1 align="right">
-  <a href="http://films.nomoredomains.icu" target="_blank" title="Homepage">
-    <img src="./.readme/logo.svg" align="left" alt="logo">
+<h1>
+  <a href="http://films.nomoredomains.icu" target="_blank">
     Movies Explorer API
   </a>
 </h1>
+
+<p align="center"><img src="./.readme/logo.svg" align="center" alt="logo"></p>
 
 ## О проекте
 API сервиса поиска фильмов и сохранения понравившихся в своем профиле.
