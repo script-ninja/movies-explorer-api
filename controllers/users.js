@@ -5,7 +5,8 @@ const NotFoundError = require('../errors/NotFoundError');
 const InternalServerError = require('../errors/InternalServerError');
 
 function getUser(req, res, next) {
-  req.user = { _id: '6077e493b35ef62e548165e' }; // тестовый id
+  // тестовый id
+  req.user = { _id: '60782573495c7a1a18b15c7b' };
   UserModel.findById(req.user._id)
     .orFail(new NotFoundError('Пользователь не найден'))
     .then((user) => res.status(200).send(user))
