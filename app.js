@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
-const router = require('./routes/main');
+const router = require('./routes/index');
 const errors = require('./middlewares/errors');
 const {
   PORT, MONGO, CORS_OPTIONS,

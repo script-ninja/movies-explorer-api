@@ -59,7 +59,7 @@ const schema = new mongoose.Schema({
     ref: 'user',
   },
   movieId: {
-    type: Number, // id стороннего сервиса? какой тип? требуется проверка
+    type: Number,
     required: [true, 'Не указан идентификатор фильма'],
     unique: true,
   },

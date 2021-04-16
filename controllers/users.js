@@ -8,7 +8,7 @@ const InternalServerError = require('../errors/InternalServerError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 const { JWT, SALT_ROUNDS } = require('../utils/config');
 
-// === регистрация и авторизация === //
+// регистрация пользователя
 function createUser(req, res, next) {
   bcrypt.hash(req.body.password, SALT_ROUNDS)
     .then((hash) => {
@@ -30,12 +30,13 @@ function createUser(req, res, next) {
           }
           break;
         default:
+          throw new InternalServerError('Не удалось зарегистрировать');
       }
-      throw new InternalServerError('Не удалось зарегистрировать');
     })
     .catch(next);
 }
 
+// авторизация пользователя
 function login(req, res, next) {
   const { email, password } = req.body;
   UserModel.findOne({ email }).select('+password')
@@ -52,7 +53,6 @@ function login(req, res, next) {
     })
     .catch(next);
 }
-// ================================= //
 
 function getUser(req, res, next) {
   UserModel.findById(req.user._id)
@@ -78,8 +78,8 @@ function updateUser(req, res, next) {
           throw new BadRequestError('Некорректный ID пользователя');
         default:
           if (err.status) throw err;
+          throw new InternalServerError('Не удалось обновить профиль');
       }
-      throw new InternalServerError('Не удалось обновить профиль');
     })
     .catch(next);
 }

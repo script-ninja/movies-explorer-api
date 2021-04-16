@@ -2,22 +2,23 @@ const MovieModel = require('../models/movie');
 const BadRequestError = require('../errors/BadRequestError');
 const ConflictError = require('../errors/ConflictError');
 const NotFoundError = require('../errors/NotFoundError');
+const ForbiddenError = require('../errors/ForbiddenError');
 const InternalServerError = require('../errors/InternalServerError');
 
-function getMovie(req, res, next) {
-  MovieModel.findOne({ movieId: req.params.id })
-    .orFail(new NotFoundError('Фильм не найден'))
-    .then((user) => res.status(200).send(user))
+function getMovies(req, res, next) {
+  MovieModel.find({})
+    .orFail(new NotFoundError('Нет сохраненных фильмов'))
+    .then((movies) => res.status(200).send(movies))
     .catch((err) => {
       if (err.status) throw err;
-      if (err.name === 'CastError') throw new BadRequestError('Некорректный ID фильма');
-      throw new InternalServerError('Не удалось получить фильм');
+      throw new InternalServerError('Не удалось получить фильмы');
     })
     .catch(next);
 }
 
 function createMovie(req, res, next) {
   req.body.owner = req.user._id;
+
   MovieModel.create(req.body)
     .then((movie) => res.status(201).send(movie))
     .catch((err) => {
@@ -36,7 +37,25 @@ function createMovie(req, res, next) {
     .catch(next);
 }
 
+function deleteMovie(req, res, next) {
+  MovieModel.findOne({ movieId: req.params.id })
+    .orFail(new NotFoundError('Нет фильма с таким ID'))
+    .then((movie) => {
+      if (String(movie.owner) !== String(req.user._id)) {
+        throw new ForbiddenError('Нельзя удалить чужой фильм');
+      }
+      return MovieModel.findByIdAndRemove(movie._id);
+    })
+    .then((deletedMovie) => {
+      const movie = deletedMovie.toObject();
+      delete movie.owner;
+      res.status(200).send(movie);
+    })
+    .catch(next);
+}
+
 module.exports = {
-  getMovie,
+  getMovies,
   createMovie,
+  deleteMovie,
 };
