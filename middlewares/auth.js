@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const UnauthorizedError = require('../errors/UnauthorizedError');
-const { JWT_KEY } = require('../utils/config');
+const { JWT } = require('../utils/config');
 
 function auth(req, res, next) {
   const { authorization } = req.headers;
@@ -11,7 +11,7 @@ function auth(req, res, next) {
 
   const token = authorization.replace('Bearer ', '');
   try {
-    req.user = jwt.verify(token, JWT_KEY);
+    req.user = jwt.verify(token, JWT.KEY);
   } catch (err) {
     throw new UnauthorizedError('Ошибка авторизации');
   }

@@ -5,13 +5,15 @@ module.exports = {
   NODE_ENV:
     process.env.NODE_ENV || 'dev',
 
-  JWT_KEY:
-    (process.env.NODE_ENV === 'production')
-      ? process.env.JWT_KEY
-      : 'jwt-key',
+  JWT: {
+    KEY:
+      (process.env.NODE_ENV === 'production')
+        ? process.env.JWT_KEY
+        : 'jwt-key',
 
-  JWT_OPTIONS: {
-    expiresIn: '7d',
+    OPTIONS: {
+      expiresIn: '7d',
+    },
   },
 
   SALT_ROUNDS: 10,
@@ -20,16 +22,18 @@ module.exports = {
     protocols: ['http', 'https'],
   },
 
-  MONGO_URI:
-    (process.env.NODE_ENV === 'production')
-      ? process.env.MONGO_URI
-      : 'mongodb://localhost:27017/moviesdb',
+  MONGO: {
+    URI:
+      (process.env.NODE_ENV === 'production')
+        ? process.env.MONGO_URI
+        : 'mongodb://localhost:27017/moviesdb',
 
-  MONGO_OPTIONS: {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-    useUnifiedTopology: true,
+    OPTIONS: {
+      useNewUrlParser: true,
+      useCreateIndex: true,
+      useFindAndModify: false,
+      useUnifiedTopology: true,
+    },
   },
 
   CORS_OPTIONS: {

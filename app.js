@@ -8,12 +8,12 @@ const bodyParser = require('body-parser');
 const router = require('./routes/main');
 const errors = require('./middlewares/errors');
 const {
-  PORT, MONGO_URI, MONGO_OPTIONS, CORS_OPTIONS,
+  PORT, MONGO, CORS_OPTIONS,
 } = require('./utils/config');
 
 const app = express();
 
-mongoose.connect(MONGO_URI, MONGO_OPTIONS);
+mongoose.connect(MONGO.URI, MONGO.OPTIONS);
 
 app.use(cors(CORS_OPTIONS));
 app.use(bodyParser.json());

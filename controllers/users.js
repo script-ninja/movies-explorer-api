@@ -6,7 +6,7 @@ const ConflictError = require('../errors/ConflictError');
 const NotFoundError = require('../errors/NotFoundError');
 const InternalServerError = require('../errors/InternalServerError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
-const { JWT_KEY, JWT_OPTIONS, SALT_ROUNDS } = require('../utils/config');
+const { JWT, SALT_ROUNDS } = require('../utils/config');
 
 // === регистрация и авторизация === //
 function createUser(req, res, next) {
@@ -30,8 +30,8 @@ function createUser(req, res, next) {
           }
           break;
         default:
-          throw new InternalServerError('Не удалось зарегистрировать');
       }
+      throw new InternalServerError('Не удалось зарегистрировать');
     })
     .catch(next);
 }
@@ -46,7 +46,7 @@ function login(req, res, next) {
         .then((matched) => {
           if (!matched) throw new UnauthorizedError('Неправильные почта или пароль');
           res.status(200).send({
-            token: jwt.sign({ _id: user._id }, JWT_KEY, JWT_OPTIONS),
+            token: jwt.sign({ _id: user._id }, JWT.KEY, JWT.OPTIONS),
           });
         });
     })
@@ -66,8 +66,27 @@ function getUser(req, res, next) {
     .catch(next);
 }
 
+function updateUser(req, res, next) {
+  UserModel.findByIdAndUpdate(req.user._id, req.body, { new: true, runValidators: true })
+    .orFail(new NotFoundError('Пользователь не найден'))
+    .then((user) => res.status(200).send(user))
+    .catch((err) => {
+      switch (err.name) {
+        case 'ValidationError':
+          throw new BadRequestError(err.message);
+        case 'CastError':
+          throw new BadRequestError('Некорректный ID пользователя');
+        default:
+          if (err.status) throw err;
+      }
+      throw new InternalServerError('Не удалось обновить профиль');
+    })
+    .catch(next);
+}
+
 module.exports = {
   createUser,
   login,
   getUser,
+  updateUser,
 };
