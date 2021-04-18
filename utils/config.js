@@ -21,6 +21,10 @@ module.exports = {
     protocols: ['http', 'https'],
   },
 
+  JOI_OPTIONS: {
+    abortEarly: false,
+  },
+
   MONGO: {
     URI: (process.env.NODE_ENV === 'production')
       ? process.env.MONGO_URI

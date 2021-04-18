@@ -4,7 +4,7 @@
   </a>
 </h1>
 
-<p align="center"><img src="./.readme/logo.svg" align="center" alt="logo"></p>
+<p align="center"><img width=100 src="./.readme/logo.svg" align="center" alt="logo"></p>
 
 ## О проекте
 API сервиса поиска фильмов и сохранения понравившихся в своем профиле.

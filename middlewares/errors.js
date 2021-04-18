@@ -5,7 +5,9 @@ module.exports = (err, req, res, next) => {
 
   if (isCelebrateError(err)) {
     status = 400;
-    message = err.details.get('body').message;
+    const messages = [];
+    err.details.forEach((value) => messages.push(value.message));
+    message = messages.join('. ');
   }
 
   if (!status) {
