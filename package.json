@@ -12,11 +12,11 @@
     "url": "git+https://github.com/script-ninja/movies-explorer-api.git"
   },
   "keywords": [
-    "кино",
-    "фильм",
-    "боевик",
-    "драма",
-    "комедия"
+    "mongo",
+    "express",
+    "react",
+    "node",
+    "javascript"
   ],
   "author": "script-ninja",
   "license": "ISC",

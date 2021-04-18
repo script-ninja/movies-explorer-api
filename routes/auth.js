@@ -1,11 +1,11 @@
 const router = require('express').Router();
-// const { celebrate, Joi } = require('celebrate');
+const { validateAuthorization, validateRegistration } = require('../middlewares/prevalidation');
 const { login, createUser } = require('../controllers/users');
 
 router.route('/signin')
-  .post(login);
+  .post(validateAuthorization, login);
 
 router.route('/signup')
-  .post(createUser);
+  .post(validateRegistration, createUser);
 
 module.exports = router;

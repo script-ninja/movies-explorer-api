@@ -1,15 +1,14 @@
 module.exports = {
   PORT:
-    process.env.PORT || 3001,
+    process.env.PORT || 3000,
 
   NODE_ENV:
     process.env.NODE_ENV || 'dev',
 
   JWT: {
-    KEY:
-      (process.env.NODE_ENV === 'production')
-        ? process.env.JWT_KEY
-        : 'jwt-key',
+    KEY: (process.env.NODE_ENV === 'production')
+      ? process.env.JWT_KEY
+      : 'jwt-key',
 
     OPTIONS: {
       expiresIn: '7d',
@@ -23,10 +22,9 @@ module.exports = {
   },
 
   MONGO: {
-    URI:
-      (process.env.NODE_ENV === 'production')
-        ? process.env.MONGO_URI
-        : 'mongodb://localhost:27017/moviesdb',
+    URI: (process.env.NODE_ENV === 'production')
+      ? process.env.MONGO_URI
+      : 'mongodb://localhost:27017/moviesdb',
 
     OPTIONS: {
       useNewUrlParser: true,

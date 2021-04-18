@@ -1,7 +1,19 @@
-module.exports = (err, req, res, next) => {
-  const message = err.status ? err.message : 'Внутренняя ошибка сервера';
+const { isCelebrateError } = require('celebrate');
 
-  res.status(err.status || 500).send({ message });
+module.exports = (err, req, res, next) => {
+  let { status, message } = err;
+
+  if (isCelebrateError(err)) {
+    status = 400;
+    message = err.details.get('body').message;
+  }
+
+  if (!status) {
+    status = 500;
+    message = 'Внутренняя ошибка сервера';
+  }
+
+  res.status(status).send({ message });
 
   next();
 };
