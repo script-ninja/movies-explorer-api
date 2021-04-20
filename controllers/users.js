@@ -76,6 +76,11 @@ function updateUser(req, res, next) {
           throw new BadRequestError(err.message);
         case 'CastError':
           throw new BadRequestError('Некорректный ID пользователя');
+        case 'MongoError':
+          if (err.code === 11000) {
+            throw new ConflictError('Указанный email зарегистрирован');
+          }
+          break;
         default:
           if (err.status) throw err;
           throw new InternalServerError('Не удалось обновить профиль');
