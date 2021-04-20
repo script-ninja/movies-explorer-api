@@ -5,6 +5,19 @@ module.exports = {
   NODE_ENV:
     process.env.NODE_ENV || 'dev',
 
+  MONGO: {
+    URI: (process.env.NODE_ENV === 'production')
+      ? process.env.MONGO_URI
+      : 'mongodb://localhost:27017/moviesdb',
+
+    OPTIONS: {
+      useNewUrlParser: true,
+      useCreateIndex: true,
+      useFindAndModify: false,
+      useUnifiedTopology: true,
+    },
+  },
+
   JWT: {
     KEY: (process.env.NODE_ENV === 'production')
       ? process.env.JWT_KEY
@@ -23,19 +36,6 @@ module.exports = {
 
   JOI_OPTIONS: {
     abortEarly: false,
-  },
-
-  MONGO: {
-    URI: (process.env.NODE_ENV === 'production')
-      ? process.env.MONGO_URI
-      : 'mongodb://localhost:27017/moviesdb',
-
-    OPTIONS: {
-      useNewUrlParser: true,
-      useCreateIndex: true,
-      useFindAndModify: false,
-      useUnifiedTopology: true,
-    },
   },
 
   CORS_OPTIONS: {
