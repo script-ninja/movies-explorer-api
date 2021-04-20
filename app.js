@@ -18,8 +18,8 @@ mongoose.connect(MONGO.URI, MONGO.OPTIONS);
 
 app.use(requestLogger);
 
-app.use(rateLimiter);
 app.use(helmet());
+app.use(rateLimiter);
 app.use(cors(CORS_OPTIONS));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
