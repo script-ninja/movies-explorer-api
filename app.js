@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const router = require('./routes/index');
 const errors = require('./middlewares/errors');
 const {
@@ -15,12 +16,15 @@ const app = express();
 
 mongoose.connect(MONGO.URI, MONGO.OPTIONS);
 
+app.use(requestLogger);
+
 app.use(cors(CORS_OPTIONS));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/', router);
 
+app.use(errorLogger);
 app.use(errors);
 
 app.listen(PORT, () => {

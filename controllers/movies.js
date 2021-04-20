@@ -31,8 +31,8 @@ function createMovie(req, res, next) {
           }
           break;
         default:
-          throw new InternalServerError('Не удалось сохранить фильм');
       }
+      throw new InternalServerError('Не удалось сохранить фильм');
     })
     .catch(next);
 }
@@ -44,12 +44,10 @@ function deleteMovie(req, res, next) {
       if (String(movie.owner) !== String(req.user._id)) {
         throw new ForbiddenError('Нельзя удалить чужой фильм');
       }
-      return MovieModel.findByIdAndRemove(movie._id);
+      return MovieModel.findByIdAndRemove(movie._id).select('-owner');
     })
     .then((deletedMovie) => {
-      const movie = deletedMovie.toObject();
-      delete movie.owner;
-      res.status(200).send(movie);
+      res.status(200).send(deletedMovie);
     })
     .catch(next);
 }

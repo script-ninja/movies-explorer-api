@@ -30,8 +30,8 @@ function createUser(req, res, next) {
           }
           break;
         default:
-          throw new InternalServerError('Не удалось зарегистрировать');
       }
+      throw new InternalServerError('Не удалось зарегистрировать');
     })
     .catch(next);
 }
@@ -83,8 +83,8 @@ function updateUser(req, res, next) {
           break;
         default:
           if (err.status) throw err;
-          throw new InternalServerError('Не удалось обновить профиль');
       }
+      throw new InternalServerError('Не удалось обновить профиль');
     })
     .catch(next);
 }
