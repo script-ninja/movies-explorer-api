@@ -1,4 +1,5 @@
 const { isCelebrateError } = require('celebrate');
+const { ERRORS } = require('../utils/constants');
 
 module.exports = (err, req, res, next) => {
   let { status, message } = err;
@@ -12,7 +13,7 @@ module.exports = (err, req, res, next) => {
 
   if (!status) {
     status = 500;
-    message = 'Внутренняя ошибка сервера';
+    message = ERRORS.COMMON.INTERNAL;
   }
 
   res.status(status).send({ message });

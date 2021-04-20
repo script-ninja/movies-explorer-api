@@ -4,14 +4,15 @@ const ConflictError = require('../errors/ConflictError');
 const NotFoundError = require('../errors/NotFoundError');
 const ForbiddenError = require('../errors/ForbiddenError');
 const InternalServerError = require('../errors/InternalServerError');
+const { ERRORS } = require('../utils/constants');
 
 function getMovies(req, res, next) {
   MovieModel.find({})
-    .orFail(new NotFoundError('Нет сохраненных фильмов'))
+    .orFail(new NotFoundError(ERRORS.MOVIE.COMMON.NO_MOVIES))
     .then((movies) => res.status(200).send(movies))
     .catch((err) => {
       if (err.status) throw err;
-      throw new InternalServerError('Не удалось получить фильмы');
+      throw new InternalServerError(ERRORS.MOVIE.COMMON.RECEIVING);
     })
     .catch(next);
 }
@@ -24,25 +25,25 @@ function createMovie(req, res, next) {
     .catch((err) => {
       switch (err.name) {
         case 'ValidationError':
-          throw new BadRequestError(err.message);
+          throw new BadRequestError(ERRORS.MOVIE.COMMON.WRONG_DATA);
         case 'MongoError':
           if (err.code === 11000) {
-            throw new ConflictError('Указанный фильм уже сохранен');
+            throw new ConflictError(ERRORS.MOVIE.COMMON.EXISTS);
           }
           break;
         default:
       }
-      throw new InternalServerError('Не удалось сохранить фильм');
+      throw new InternalServerError(ERRORS.MOVIE.COMMON.NOT_SAVED);
     })
     .catch(next);
 }
 
 function deleteMovie(req, res, next) {
   MovieModel.findOne({ movieId: req.params.id })
-    .orFail(new NotFoundError('Нет фильма с таким ID'))
+    .orFail(new NotFoundError(ERRORS.MOVIE.COMMON.NOT_FOUND))
     .then((movie) => {
       if (String(movie.owner) !== String(req.user._id)) {
-        throw new ForbiddenError('Нельзя удалить чужой фильм');
+        throw new ForbiddenError(ERRORS.MOVIE.COMMON.WRONG_OWNER);
       }
       return MovieModel.findByIdAndRemove(movie._id).select('-owner');
     })
