@@ -7,7 +7,7 @@ const InternalServerError = require('../errors/InternalServerError');
 const { ERRORS } = require('../utils/constants');
 
 function getMovies(req, res, next) {
-  MovieModel.find({})
+  MovieModel.find({ owner: req.user._id }).select('-owner')
     .orFail(new NotFoundError(ERRORS.MOVIE.COMMON.NO_MOVIES))
     .then((movies) => res.status(200).send(movies))
     .catch((err) => {
@@ -20,18 +20,16 @@ function getMovies(req, res, next) {
 function createMovie(req, res, next) {
   req.body.owner = req.user._id;
 
-  MovieModel.create(req.body)
+  MovieModel.findOne({ owner: req.body.owner, movieId: req.body.movieId })
+    .then((movie) => {
+      if (movie) throw new ConflictError(ERRORS.MOVIE.COMMON.EXISTS);
+      return MovieModel.create(req.body);
+    })
     .then((movie) => res.status(201).send(movie))
     .catch((err) => {
-      switch (err.name) {
-        case 'ValidationError':
-          throw new BadRequestError(ERRORS.MOVIE.COMMON.WRONG_DATA);
-        case 'MongoError':
-          if (err.code === 11000) {
-            throw new ConflictError(ERRORS.MOVIE.COMMON.EXISTS);
-          }
-          break;
-        default:
+      if (err.status) throw err;
+      if (err.name === 'ValidationError') {
+        throw new BadRequestError(ERRORS.MOVIE.COMMON.WRONG_DATA);
       }
       throw new InternalServerError(ERRORS.MOVIE.COMMON.NOT_SAVED);
     })
@@ -39,7 +37,7 @@ function createMovie(req, res, next) {
 }
 
 function deleteMovie(req, res, next) {
-  MovieModel.findOne({ movieId: req.params.id })
+  MovieModel.findOne({ owner: req.user._id, movieId: req.params.id })
     .orFail(new NotFoundError(ERRORS.MOVIE.COMMON.NOT_FOUND))
     .then((movie) => {
       if (String(movie.owner) !== String(req.user._id)) {
