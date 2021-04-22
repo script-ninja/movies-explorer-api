@@ -25,10 +25,14 @@ const nameSchema = Joi.string().min(2).max(30).messages({
   'string.max': ERRORS.USER.NAME.MAX,
 });
 
-const movieIdSchema = Joi.number().required().integer().messages({
-  'any.required': ERRORS.MOVIE.MOVIEID.REQUIRED,
-  'number.base': ERRORS.MOVIE.MOVIEID.BASE,
-  'number.integer': ERRORS.MOVIE.MOVIEID.INTEGER,
+const movieMongoIdSchema = Joi.object().keys({
+  id: Joi.string().required().length(24).hex()
+    .messages({
+      'any.required': ERRORS.MOVIE.ID.REQUIRED,
+      'string.empty': ERRORS.MOVIE.ID.EMPTY,
+      'string.length': ERRORS.MOVIE.ID.INVALID,
+      'string.hex': ERRORS.MOVIE.ID.INVALID,
+    }),
 });
 
 const movieSchema = Joi.object().keys({
@@ -76,7 +80,11 @@ const movieSchema = Joi.object().keys({
   //     'string.length': ERRORS.MOVIE.OWNER.INVALID,
   //     'string.hex': ERRORS.MOVIE.OWNER.INVALID,
   //   }),
-  movieId: movieIdSchema,
+  movieId: Joi.number().required().integer().messages({
+    'any.required': ERRORS.MOVIE.MOVIEID.REQUIRED,
+    'number.base': ERRORS.MOVIE.MOVIEID.BASE,
+    'number.integer': ERRORS.MOVIE.MOVIEID.INTEGER,
+  }),
   nameRU: Joi.string().required().messages({
     'any.required': ERRORS.MOVIE.NAMERU.REQUIRED,
     'string.empty': ERRORS.MOVIE.NAMERU.EMPTY,
@@ -115,10 +123,8 @@ const validateMovie = celebrate({
   body: movieSchema,
 }, JOI_OPTIONS);
 
-const validateMovieId = celebrate({
-  params: Joi.object().keys({
-    id: movieIdSchema,
-  }),
+const validateMovieMongoId = celebrate({
+  params: movieMongoIdSchema,
 }, JOI_OPTIONS);
 
 module.exports = {
@@ -126,5 +132,5 @@ module.exports = {
   validateAuthorization,
   validateProfileUpdate,
   validateMovie,
-  validateMovieId,
+  validateMovieMongoId,
 };

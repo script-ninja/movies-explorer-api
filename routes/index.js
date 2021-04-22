@@ -7,8 +7,9 @@ const NotFoundError = require('../errors/NotFoundError');
 const { ERRORS } = require('../utils/constants');
 
 router.use('/', authRouter);
-router.use('/users', auth, usersRouter);
-router.use('/movies', auth, moviesRouter);
+router.use(auth);
+router.use('/users', usersRouter);
+router.use('/movies', moviesRouter);
 router.use(() => {
   throw new NotFoundError(ERRORS.COMMON.NOT_FOUND);
 });

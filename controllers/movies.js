@@ -37,16 +37,26 @@ function createMovie(req, res, next) {
 }
 
 function deleteMovie(req, res, next) {
-  MovieModel.findOne({ owner: req.user._id, movieId: req.params.id })
+  MovieModel.findById(req.params.id)
     .orFail(new NotFoundError(ERRORS.MOVIE.COMMON.NOT_FOUND))
     .then((movie) => {
       if (String(movie.owner) !== String(req.user._id)) {
         throw new ForbiddenError(ERRORS.MOVIE.COMMON.WRONG_OWNER);
       }
-      return MovieModel.findByIdAndRemove(movie._id).select('-owner');
+      return movie.remove();
     })
     .then((deletedMovie) => {
       res.status(200).send(deletedMovie);
+    })
+    .catch((err) => {
+      if (err.status) throw err;
+      if (err.name === 'CastError') {
+        throw new BadRequestError(ERRORS.MOVIE.COMMON.WRONG_ID);
+      }
+      if (err.name === 'ValidationError') {
+        throw new BadRequestError(ERRORS.MOVIE.COMMON.WRONG_DATA);
+      }
+      throw new InternalServerError(ERRORS.MOVIE.COMMON.NOT_DELETED);
     })
     .catch(next);
 }

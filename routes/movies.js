@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { validateMovie, validateMovieId } = require('../middlewares/prevalidation');
+const { validateMovie, validateMovieMongoId } = require('../middlewares/prevalidation');
 const { getMovies, createMovie, deleteMovie } = require('../controllers/movies');
 
 router.route('/')
@@ -7,6 +7,6 @@ router.route('/')
   .post(validateMovie, createMovie);
 
 router.route('/:id')
-  .delete(validateMovieId, deleteMovie);
+  .delete(validateMovieMongoId, deleteMovie);
 
 module.exports = router;
