@@ -7,7 +7,7 @@ const InternalServerError = require('../errors/InternalServerError');
 const { ERRORS } = require('../utils/constants');
 
 function getMovies(req, res, next) {
-  MovieModel.find({ owner: req.user._id }).select('-owner')
+  MovieModel.find({ owner: req.user._id })
     .orFail(new NotFoundError(ERRORS.MOVIE.COMMON.NO_MOVIES))
     .then((movies) => res.status(200).send(movies))
     .catch((err) => {

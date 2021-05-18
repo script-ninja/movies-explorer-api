@@ -93,9 +93,7 @@ const movieSchema = Joi.object().keys({
     'any.required': ERRORS.MOVIE.NAMEEN.REQUIRED,
     'string.empty': ERRORS.MOVIE.NAMEEN.EMPTY,
   }),
-}).messages({
-  'object.unknown': '\'{#child}\' - лишнее поле',
-});
+}).unknown(true);
 
 const validateRegistration = celebrate({
   body: Joi.object().keys({
